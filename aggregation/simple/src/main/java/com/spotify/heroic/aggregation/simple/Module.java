@@ -126,6 +126,12 @@ public class Module implements HeroicModule {
             c.register(BelowK.NAME, BelowK.class, BelowKInstance.class,
                 args -> new BelowK(fetchK(args, DoubleExpression.class).getValue(),
                     Optional.empty()));
+
+            c.register(PointsAboveK.NAME, PointsAboveK.class, PointsAboveKInstance.class,
+                args -> new PointsAboveK(fetchK(args, DoubleExpression.class).getValue()));
+
+            c.register(PointsBelowK.NAME, PointsBelowK.class, PointsBelowKInstance.class,
+                args -> new PointsBelowK(fetchK(args, DoubleExpression.class).getValue()));
         }
 
         private <T extends Expression> T fetchK(AggregationArguments args, Class<T> doubleClass) {
