@@ -18,26 +18,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package com.spotify.heroic.aggregation.simple;
 
-import com.spotify.heroic.aggregation.Aggregation;
-import com.spotify.heroic.aggregation.AggregationContext;
-import com.spotify.heroic.aggregation.AggregationInstance;
+import com.spotify.heroic.metric.MetricCollection;
+import com.spotify.heroic.metric.MetricType;
+import com.spotify.heroic.metric.Point;
 import lombok.Data;
 
-import java.beans.ConstructorProperties;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Data
-public class PointsAboveK implements Aggregation {
-    public static final String NAME = "pointsabove";
-    private final double k;
+public class FilterPointsThresholdStrategy implements MetricMappingStrategy {
+    private final FilterKThresholdType filterType;
+    private final double threshold;
 
-    @ConstructorProperties({"k"})
-    public PointsAboveK(final double k) {
-        this.k = k;
-    }
     @Override
-    public AggregationInstance apply(AggregationContext aggregationContext) {
-        return new PointsAboveKInstance(k);
+    public MetricCollection apply(MetricCollection metrics) {
+        if (metrics.getType() == MetricType.POINT) {
+            return MetricCollection.build(
+                MetricType.POINT,
+                filterWithThreshold(metrics.getDataAs(Point.class))
+            );
+        } else {
+            return metrics;
+        }
+    }
+
+    private List<Point> filterWithThreshold(List<Point> points) {
+        return points.stream()
+            .filter(point -> filterType.predicate(point.getValue(), threshold))
+            .collect(toList());
     }
 }

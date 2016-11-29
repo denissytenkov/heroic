@@ -18,26 +18,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package com.spotify.heroic.aggregation.simple;
 
-import com.spotify.heroic.aggregation.Aggregation;
-import com.spotify.heroic.aggregation.AggregationContext;
-import com.spotify.heroic.aggregation.AggregationInstance;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.beans.ConstructorProperties;
 
-@Data
-public class PointsBelowK implements Aggregation {
-    public static final String NAME = "pointsbelow";
-    private final double k;
+@ToString
+@EqualsAndHashCode(callSuper = true)
+public class PointsAboveInstance extends MetricMappingAggregation {
 
-    @ConstructorProperties({"k"})
-    public PointsBelowK(final double k) {
-        this.k = k;
-    }
-    @Override
-    public AggregationInstance apply(AggregationContext aggregationContext) {
-        return new PointsBelowKInstance(k);
+    @ConstructorProperties({"threshold"})
+    public PointsAboveInstance(double threshold) {
+        super(new FilterPointsThresholdStrategy(FilterKThresholdType.ABOVE, threshold));
     }
 }

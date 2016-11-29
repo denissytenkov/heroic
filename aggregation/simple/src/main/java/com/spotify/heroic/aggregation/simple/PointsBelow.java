@@ -21,27 +21,24 @@
 
 package com.spotify.heroic.aggregation.simple;
 
-import com.spotify.heroic.metric.*;
+import com.spotify.heroic.aggregation.Aggregation;
+import com.spotify.heroic.aggregation.AggregationContext;
+import com.spotify.heroic.aggregation.AggregationInstance;
 import lombok.Data;
 
-import java.util.*;
-
-import static java.util.stream.Collectors.toList;
+import java.beans.ConstructorProperties;
 
 @Data
-public class FilterPointsKThresholdStrategy implements MetricMappingStrategy{
-    private final FilterKThresholdType filterType;
-    private final double k;
+public class PointsBelow implements Aggregation {
+    public static final String NAME = "pointsbelow";
+    private final double threshold;
 
-    @Override
-    public MetricCollection apply(MetricCollection metrics) {
-        return MetricCollection.build(
-            MetricType.POINT,
-            filterWithThreshold(metrics.getDataAs(Point.class))
-        );
+    @ConstructorProperties({"threshold"})
+    public PointsBelow(final double threshold) {
+        this.threshold = threshold;
     }
-
-    private List<Point> filterWithThreshold(List<Point> points) {
-        return points.stream().filter(point -> filterType.predicate(point.getValue(), k)).collect(toList());
+    @Override
+    public AggregationInstance apply(AggregationContext aggregationContext) {
+        return new PointsBelowInstance(threshold);
     }
 }

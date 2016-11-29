@@ -21,10 +21,17 @@
 
 package com.spotify.heroic.aggregation.simple;
 
-import com.spotify.heroic.aggregation.*;
+import com.spotify.heroic.aggregation.AggregationInstance;
+import com.spotify.heroic.aggregation.AggregationResult;
+import com.spotify.heroic.aggregation.AggregationSession;
+import com.spotify.heroic.aggregation.EmptyInstance;
+import com.spotify.heroic.aggregation.AggregationOutput;
 import com.spotify.heroic.common.DateRange;
 import com.spotify.heroic.common.Series;
-import com.spotify.heroic.metric.*;
+import com.spotify.heroic.metric.Event;
+import com.spotify.heroic.metric.MetricGroup;
+import com.spotify.heroic.metric.Payload;
+import com.spotify.heroic.metric.Point;
 import lombok.Data;
 
 import java.util.List;
@@ -95,7 +102,8 @@ public abstract class MetricMappingAggregation implements AggregationInstance {
 
         @Override
         public void updateSpreads(
-            final Map<String, String> key, final Set<Series> series, final List<com.spotify.heroic.metric.Spread> values
+            final Map<String, String> key, final Set<Series> series,
+            final List<com.spotify.heroic.metric.Spread> values
         ) {
             this.childSession.updateSpreads(key, series, values);
         }

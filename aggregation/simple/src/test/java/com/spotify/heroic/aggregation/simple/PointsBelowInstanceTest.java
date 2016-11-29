@@ -37,13 +37,13 @@ import java.util.Set;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 
-public class PointsBelowKInstanceTest {
+public class PointsBelowInstanceTest {
     @Test
     public void testFilterPointsAboveKSession() {
         final GroupingAggregation g1 =
             new GroupInstance(Optional.of(ImmutableList.of("site")), EmptyInstance.INSTANCE);
 
-        final AggregationInstance a1 = ChainInstance.of(g1, new PointsBelowKInstance(2));
+        final AggregationInstance a1 = ChainInstance.of(g1, new PointsBelowInstance(2));
 
         final Set<Series> states = new HashSet<>();
 

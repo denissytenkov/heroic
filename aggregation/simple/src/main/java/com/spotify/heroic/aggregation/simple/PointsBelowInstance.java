@@ -18,14 +18,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package com.spotify.heroic.aggregation.simple;
 
 import java.beans.ConstructorProperties;
 
-public class PointsBelowKInstance extends MetricMappingAggregation{
+public class PointsBelowInstance extends MetricMappingAggregation {
 
-    @ConstructorProperties({"k"})
-    public PointsBelowKInstance(double k) {
-        super(new FilterPointsKThresholdStrategy(FilterKThresholdType.BELOW, k));
+    @ConstructorProperties({"threshold"})
+    public PointsBelowInstance(double threshold) {
+        super(new FilterPointsThresholdStrategy(FilterKThresholdType.BELOW, threshold));
     }
 }
