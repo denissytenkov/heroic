@@ -20,6 +20,7 @@
  */
 package com.spotify.heroic.aggregation.simple;
 
+import com.spotify.heroic.metric.Event;
 import com.spotify.heroic.metric.MetricCollection;
 import com.spotify.heroic.metric.MetricType;
 import com.spotify.heroic.metric.Point;
@@ -31,34 +32,47 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static junit.framework.TestCase.assertFalse;
+import static org.junit.Assert.assertEquals;
 
-public class FilterPointsKThresholdStrategyTest {
+public class FilterPointsThresholdStrategyTest {
     private static final int POINT_RANGE_START = 0;
     private static final int TEST_THRESHOLD = 38;
     private static final int POINT_RANGE_END = 100;
 
-    private MetricCollection initialMetrics;
+    private MetricCollection initialMetricsPoints;
 
     @Before
     public void setUp() throws Exception {
-        initialMetrics = MetricCollection.build(MetricType.POINT, pointsRange());
+        initialMetricsPoints = MetricCollection.build(MetricType.POINT, pointsRange());
     }
 
     @Test
     public void testFilterPointsAbove() throws Exception {
-        FilterPointsKThresholdStrategy strategy = new FilterPointsKThresholdStrategy(FilterKThresholdType.ABOVE, TEST_THRESHOLD);
-        List<Point> result = strategy.apply(initialMetrics).getDataAs(Point.class);
+        FilterPointsThresholdStrategy strategy = new FilterPointsThresholdStrategy(FilterKThresholdType.ABOVE, TEST_THRESHOLD);
+        List<Point> result = strategy.apply(initialMetricsPoints).getDataAs(Point.class);
         assertFalse(result.stream().map(Point::getValue).anyMatch(v -> v <= TEST_THRESHOLD));
     }
 
     @Test
     public void testFilterPointsBelow() throws Exception {
-        FilterPointsKThresholdStrategy strategy = new FilterPointsKThresholdStrategy(FilterKThresholdType.BELOW, TEST_THRESHOLD);
-        List<Point> result = strategy.apply(initialMetrics).getDataAs(Point.class);
+        FilterPointsThresholdStrategy strategy = new FilterPointsThresholdStrategy(FilterKThresholdType.BELOW, TEST_THRESHOLD);
+        List<Point> result = strategy.apply(initialMetricsPoints).getDataAs(Point.class);
         assertFalse(result.stream().map(Point::getValue).anyMatch(v -> v >= TEST_THRESHOLD));
+    }
+
+    @Test
+    public void testFilterDataIsDifferentFromPointsThenCollectionIsNotProcessed() throws Exception {
+        FilterPointsThresholdStrategy strategy = new FilterPointsThresholdStrategy(FilterKThresholdType.BELOW, TEST_THRESHOLD);
+        MetricCollection eventsCollection = MetricCollection.events(eventsRange());
+        MetricCollection result = strategy.apply(eventsCollection);
+        assertEquals(eventsCollection, result);
     }
 
     private List<Point> pointsRange() {
         return IntStream.range(POINT_RANGE_START, POINT_RANGE_END).mapToObj(i -> new Point(i, i)).collect(toList());
+    }
+
+    private List<Event> eventsRange() {
+        return IntStream.range(POINT_RANGE_START, POINT_RANGE_END).mapToObj(Event::new).collect(toList());
     }
 }

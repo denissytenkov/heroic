@@ -29,19 +29,23 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 
 @Data
-public class FilterPointsKThresholdStrategy implements MetricMappingStrategy{
+public class FilterPointsThresholdStrategy implements MetricMappingStrategy{
     private final FilterKThresholdType filterType;
-    private final double k;
+    private final double threshold;
 
     @Override
     public MetricCollection apply(MetricCollection metrics) {
-        return MetricCollection.build(
-            MetricType.POINT,
-            filterWithThreshold(metrics.getDataAs(Point.class))
-        );
+        if (metrics.getType() == MetricType.POINT) {
+            return MetricCollection.build(
+                MetricType.POINT,
+                filterWithThreshold(metrics.getDataAs(Point.class))
+            );
+        } else {
+            return metrics;
+        }
     }
 
     private List<Point> filterWithThreshold(List<Point> points) {
-        return points.stream().filter(point -> filterType.predicate(point.getValue(), k)).collect(toList());
+        return points.stream().filter(point -> filterType.predicate(point.getValue(), threshold)).collect(toList());
     }
 }

@@ -20,17 +20,12 @@
  */
 package com.spotify.heroic.aggregation.simple;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import java.beans.ConstructorProperties;
 
-@ToString
-@EqualsAndHashCode(callSuper = true)
-public class PointsAboveKInstance extends MetricMappingAggregation{
+public class PointsBelowInstance extends MetricMappingAggregation{
 
-    @ConstructorProperties({"k"})
-    public PointsAboveKInstance(double k) {
-        super(new FilterPointsKThresholdStrategy(FilterKThresholdType.ABOVE, k));
+    @ConstructorProperties({"threshold"})
+    public PointsBelowInstance(double threshold) {
+        super(new FilterPointsThresholdStrategy(FilterKThresholdType.BELOW, threshold));
     }
 }

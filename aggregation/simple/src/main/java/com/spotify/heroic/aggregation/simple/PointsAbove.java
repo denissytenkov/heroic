@@ -20,12 +20,24 @@
  */
 package com.spotify.heroic.aggregation.simple;
 
+import com.spotify.heroic.aggregation.Aggregation;
+import com.spotify.heroic.aggregation.AggregationContext;
+import com.spotify.heroic.aggregation.AggregationInstance;
+import lombok.Data;
+
 import java.beans.ConstructorProperties;
 
-public class PointsBelowKInstance extends MetricMappingAggregation{
+@Data
+public class PointsAbove implements Aggregation {
+    public static final String NAME = "pointsabove";
+    private final double threshold;
 
-    @ConstructorProperties({"k"})
-    public PointsBelowKInstance(double k) {
-        super(new FilterPointsKThresholdStrategy(FilterKThresholdType.BELOW, k));
+    @ConstructorProperties({"threshold"})
+    public PointsAbove(final double threshold) {
+        this.threshold = threshold;
+    }
+    @Override
+    public AggregationInstance apply(AggregationContext aggregationContext) {
+        return new PointsAboveInstance(threshold);
     }
 }

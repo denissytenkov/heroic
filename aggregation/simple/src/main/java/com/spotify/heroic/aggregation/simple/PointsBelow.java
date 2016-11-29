@@ -28,16 +28,16 @@ import lombok.Data;
 import java.beans.ConstructorProperties;
 
 @Data
-public class PointsBelowK implements Aggregation {
+public class PointsBelow implements Aggregation {
     public static final String NAME = "pointsbelow";
-    private final double k;
+    private final double threshold;
 
-    @ConstructorProperties({"k"})
-    public PointsBelowK(final double k) {
-        this.k = k;
+    @ConstructorProperties({"threshold"})
+    public PointsBelow(final double threshold) {
+        this.threshold = threshold;
     }
     @Override
     public AggregationInstance apply(AggregationContext aggregationContext) {
-        return new PointsBelowKInstance(k);
+        return new PointsBelowInstance(threshold);
     }
 }
